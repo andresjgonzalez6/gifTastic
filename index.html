@@ -1,35 +1,187 @@
-<!<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
+
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Animaltastic</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="script.js"></script>
+
+    <meta charset="UTF-8">
+    <title>Animals Giphy!</title>
+
+    <style>
+        #todo-item {
+        font-weight: 700;
+        font-size: 2em;
+      }
+    </style>
 </head>
+
 <body>
-    
-    <div id="animalButtons">
 
-    </div>
+    <!-- Title -->
+    <h1>My To Do's!</h1>
 
-    <form id="animal-form">
-        <label for="animal-input">Add an animal</label>
-        <input type="text" id="animal-input"><br>
-
-        <input id= "addAnimal" type="submit" value="Submit">
+    <!-- Input Form -->
+    <form>
+        <span id="todo-item">To Do Item:
+            <!--typing area-->
+            <input id="to-do" type="text">
+            <!--the button to add typed area.-->
+            <input id="add-to-do" value="Add Item" type="submit">
+        </span>
     </form>
 
-    <div id="animals">
+    <hr>
 
-    </div>
+    <!-- To-Do List -->
+    <div id="to-dos"></div>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Script -->
+    <script type="text/javascript">
+
+        //********* API TAKEN FROM GIPHY WEBSITE *********//
+
+        //javascript, jQuery
+        // var xhr = $.get("http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key=YOUR_API_KEY&limit=5");
+        // xhr.done(function(data) { console.log("success got data", data); });
 
 
 
-<script></script>
-<script></script>
+        //**********API GIVEN IN CLASS ********//
 
+        // Example queryURL for Giphy API
+        var queryURL = "https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC";
+
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function (response) {
+            console.log(response);
+        });
+
+        // Create an initial toDoCount variable
+        var toDoCount = 0;
+        var todoArray = [];
+        var storedItems = JSON.parse(localStorage.getItem('todo'));
+        function populatelist() {
+            if (!storedItems)
+                storedItems = [];
+
+            for (let index = 0; index < storedItems.length; index++) {
+                const element = storedItems[index];
+                var toDoItem = $("<p>");
+
+                toDoItem.attr("id", "item-" + toDoCount);
+                toDoItem.text(element);
+
+                var toDoClose = $("<button>");
+
+                toDoClose.attr("data-to-do", toDoCount);
+                toDoClose.addClass("checkbox");
+                toDoClose.text(toDoTask);
+
+                toDoItem.prepend(toDoClose);
+
+                $("#to-dos").append(toDoItem);
+                todoArray.push(element);
+
+            }
+        };
+
+        //  On Click event associated with the add-to-do function
+        $("#add-to-do").on("click", function (event) {
+            event.preventDefault();
+
+            // Get the to-do "value" from the textbox and store it a variable
+            var toDoTask = $("#to-do").val().trim();
+
+            // Create a new variable that will hold a "<p>" tag.
+            // Then give it an ID in the following form:
+            // "item-4" or "item-3" or "item-99", where the number is equal to toDoCount.
+            // Then set the to-do "value" as text to this <p> element.
+            var toDoItem = $("<p>");
+
+            toDoItem.attr("id", "item-" + toDoCount);
+            toDoItem.text(toDoTask);
+            todoArray.push(toDoTask);
+            console.log(todoArray);
+
+            // Create a button with unique identifiers based on what number it is in the list. Again use jQuery to do this.
+            // Give your button a data attribute called data-to-do and a class called "checkbox".
+            // Lastly add a checkmark inside.
+
+            var toDoClose = $("<button>");
+
+            toDoClose.attr("data-to-do", toDoCount);
+            toDoClose.addClass("checkbox");
+            toDoClose.text(toDoTask);
+
+            // Append the button to the to do item
+            toDoItem = toDoItem.prepend(toDoClose);
+            localStorage.setItem('todo', JSON.stringify(todoArray));
+
+
+            // Add the button and to do item to the to-dos div
+            $("#to-dos").append(toDoItem);
+
+            // Clear the textbox when done
+            $("#to-do").val("");
+
+            // Add to the toDoCount
+            toDoCount++;
+        });
+
+        // When a user clicks a check box then delete the specific content
+        // (NOTE: Pay attention to the unusual syntax here for the click event.
+        // Because we are creating click events on "dynamic" content, we can't just use the usual "on" "click" syntax.)
+
+
+
+        //******** BELOW, PLACE THE AJAX API FOR GIPHY WHENEVER A BUTTON IS PRESSED*******/// 
+
+        $(document.body).on("click", ".checkbox", function () {
+
+            // Get the number of the button from its data attribute and hold in a variable called  toDoNumber.
+            var toDoNumber = parseInt($(this).attr("data-to-do"));
+
+            // Select and Remove the specific <p> element that previously held the to do item number.
+
+            //******* THIS DELETES THE LINE FROM THE HTML ***********//
+
+            $("#item-" + toDoNumber).remove();
+            todoArray.splice(toDoNumber, 1);
+            localStorage.setItem('todo', JSON.stringify(todoArray));
+
+        });
+
+
+        //******** THIS PAUSES AND START THE GIFS ***********//
+
+        $(".gif").on("click", function () {
+            console.log(this);
+            // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+            var state = $(this).attr("data-state");
+            console.log(state);
+            // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+            // Then, set the image's data-state to animate
+            // Else set src to the data-still value
+            if (state === "still") {
+                console.log('State was still');
+                $(this).attr("src", $(this).attr("data-animate"));
+                $(this).attr("data-state", "animate");
+            } else {
+                console.log('State was animated');
+                $(this).attr("src", $(this).attr("data-still"));
+                $(this).attr("data-state", "still");
+            }
+        });
+
+        populatelist();
+
+
+    </script>
 
 </body>
+
 </html>
