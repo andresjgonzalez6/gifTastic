@@ -2,130 +2,29 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Giphy Assignment!!</title>
+  <meta charset="UTF-8">
+  <title>Animaltastic</title>
+  <link rel="stylesheet" type="text/css" href="main.css">
 </head>
 
 <body>
 
-    <form role="form">
-        <label for="search">Search Term:</label>
-        <input type="text" id="search-term">
-        <input id="create-button" type="submit" value="submit">
-    </form>
+  <div id="animal-buttons">
 
-    <div id="buttons-appear-here">
-        <button id="gif-button" data-person="Arnold Schwarzenegger">I'll be back</button>
-    </div>
+  </div>
 
-    <br>
+  <form id="animal-form">
+    <label for="animal-input">ADD AN ANIMAL</label>
+    <input type="text" id="animal-input"><br>
+    <input id="add-animal" type="submit" value="Submit">
+  </form>
 
+  <div id="animals">
 
-    <div id="gifs-appear-here">
-    </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript">
-
-
-        $(document).ready(function () {
-
-            var arrayGifs = ["dog", "cat", "fish"]
-
-            //***** Need to create buttons made from the search form. ******//
-
-            function buildButtons() {
-                $("#buttons-appear-here").empty();
-                for (let index = 0; index < arrayGifs.length; index++) {
-                    var b = $("<button>");
-                    b.text(arrayGifs[index]);
-                    b.attr("data-name", arrayGifs[index]);
-                    b.addClass("gif-button");
-                    $("#gifs-appear-here").append(b);
-                }
-            }
-
-            $("#create-button").on("click", function () {
-                event.preventDefault();
-                var search = $("#search-term").val().trim();
-                console.log(search);
-                arrayGifs.push(search);
-                buildButtons();
-                console.log(arrayGifs);
-            });
-
-
-
-            //******Everything beneath this is the in-class activity with actors***///
-
-            // Event listener for all button elements
-            $("#gif-button").on("click", function () {
-                // In this case, the "this" keyword refers to the button that was clicked
-                //var person = $(this).attr("data-person");
-                var person = $(this).val("#search-term");
-                console.log(person);
-
-                // Constructing a URL to search Giphy for the name of the person who said the quote
-     
-
-function displayAnimalGifs(person) {
-                // Performing our AJAX GET request
-                var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-                    person + "&api_key=dc6zaTOxFJmzC&limit=10";
-
-                $.ajax({
-                    url: queryURL,
-                    method: "GET"
-                })
-                    // After the data comes back from the API
-                    .then(function (response) {
-                        // Storing an array of results in the results variable
-                        var results = response.data;
-
-                        // Looping over every result item
-                        for (var i = 0; i < results.length; i++) {
-
-                            // Only taking action if the photo has an appropriate rating
-                            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
-                                // Creating a div for the gif
-                                var gifDiv = $("<div>");
-
-                                // Storing the result item's rating
-                                var rating = results[i].rating;
-
-                                // Creating a paragraph tag with the result item's rating
-                                var p = $("<p>").text("Rating: " + rating);
-
-                                // Creating an image tag
-                                var personImage = $("<img>");
-
-                                // Giving the image tag an src attribute of a proprty pulled off the
-                                // result item
-                                personImage.attr("src", results[i].images.fixed_height.url);
-
-                                // Appending the paragraph and personImage we created to the "gifDiv" div we created
-                                gifDiv.append(p);
-                                gifDiv.append(personImage);
-
-                                // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
-                                $("#gifs-appear-here").prepend(gifDiv);
-                            }
-                        
-                        }
-                    
-                    });
-                }
-            });
-
-            $(document).on("click", ".button", function (e){
-                var name = $(this).attr("data-name");
-                $("#gifs-appear-here").empty();
-                displayAnimalsGifs(name);
-
-            });
-
-        });
-    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="script.js"></script>
+  
 </body>
-
 </html>
